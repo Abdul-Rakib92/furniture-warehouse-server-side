@@ -18,20 +18,6 @@ const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
 });
 
-// client.connect((err) => {
-//   const inventoryItemCollection = client
-//     .db("ahammedFurniture")
-//     .collection("inventoryItem");
-//   // perform actions on the collection object
-//   console.log("is connect db");
-
-//   app.get('/inventoryItem', (req, res) => {
-//     const query = {};
-//     const cursor = inventoryItemCollection.find(query);
-//     const inventoryItems =  cursor.toArray();
-//     res.send(inventoryItems);
-//   });
-// });
 
 
 async function run(){
@@ -41,6 +27,11 @@ async function run(){
     const inventoryItemCollection = client.db('ahammedFurniture').collection('inventoryItem');
     console.log('db is connected');
 
+    const myItemCollection = client.db('ahammedFurniture').collection('myItem');
+    
+
+
+    // inventoryItem API
     app.get('/inventoryItem', async (req, res) =>{
       const query = {};
       const cursor = inventoryItemCollection.find(query);
@@ -56,6 +47,8 @@ async function run(){
       res.send(inventoryItem);
     });
 
+
+    // update API
     app.put('/inventoryItem/:id', async (req, res) => {
       const id = req.params.id;
       const updatedInventoryItem = req.body;
@@ -105,6 +98,24 @@ async function run(){
 
     })
 
+    // MyItem API
+
+    app.get('/myItem', async(req, res) =>{
+      const email = req.query.email;
+      console.log(email);
+      const query = {email: email};
+      const cursor = myItemCollection.find(query);
+      const myItems = await cursor.toArray();
+      res.send(myItems);
+
+    })
+
+    app.post('/myItem', async (req, res) => {
+      const myItem = req.body;
+      const result = await myItemCollection.insertOne(myItem);
+      res.send(result);
+    })
+
 
   }
 
@@ -115,40 +126,6 @@ async function run(){
 
 run().catch(console.dir);
 
-
-
-//         // //update user
-//         // app.put('/inventoryItem/:id', async(req, res) =>{
-//         //     const id = req.params.id;
-//         //     const updatedInventoryItem = req.body;
-//         //     const filter = {_id: ObjectId(id)};
-//         //     const options = {upsert: true};
-//         //     const updatadDoc = {
-//         //         $set:{
-//         //             quantity: updatedInventoryItem.quantity
-//         //         }
-//         //     }
-
-//         //     const result = await inventoryItemCollection.updateOne(filter, usdatedDoc, options);
-//         //     res.send(result);
-//         // })
-
-//         //DELETE
-//         app.delete('/inventoryItem/:id', async(req, res) =>{
-//             const id = req.params.id;
-//             const query = {_id: ObjectId(id)};
-//             const result = await inventoryItemCollection.deleteOne(query);
-//             res.send(result);
-//         })
-
-//     }
-//     finally{
-
-//     }
-
-// }
-
-// run().catch(console.dir);
 
 app.get("/", (req, res) => {
   res.send(" Ahammed  Warehouse is start");
