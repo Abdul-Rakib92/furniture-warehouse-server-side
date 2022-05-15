@@ -104,6 +104,7 @@ async function run(){
       const email = req.query.email;
       console.log(email);
       const query = {email: email};
+      // const query = {};
       const cursor = myItemCollection.find(query);
       const myItems = await cursor.toArray();
       res.send(myItems);
@@ -113,6 +114,14 @@ async function run(){
     app.post('/myItem', async (req, res) => {
       const myItem = req.body;
       const result = await myItemCollection.insertOne(myItem);
+      res.send(result);
+    })
+
+    // delete myitem
+    app.delete('/myItem/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = {_id: ObjectId(id)};
+      const result = await myItemCollection.deleteOne(query);
       res.send(result);
     })
 
