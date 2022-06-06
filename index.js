@@ -65,6 +65,7 @@ async function run(){
 
     })
 
+    // update API
     app.put('/inventoryItem/:id', async (req, res) => {
       const id = req.params.id;
       const deliveryInventoryItem = req.body;
